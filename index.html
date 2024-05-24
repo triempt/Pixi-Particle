@@ -1,23 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-<!--    <script src="src/pixi.js"></script>-->
-    <script type="module" src="src/index.js"></script>
-    <script type="module">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixi Emitter - Smoke</title>
+    <style type="text/css">
+        body {
+          	margin: 0;
+          	padding: 0;
+          	background-color: #ffffff;
+        }
 
-
-    </script>
+        canvas {
+            padding: 0;
+            margin: 10px auto 0;
+            display: block;
+        }
+    </style>
+    <link rel="icon" href="https://pixijs.com/images/favicon.png" type="image/x-icon">
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <script src="https://pixijs.io/particle-emitter/dist/particle-emitter.js"></script>    
+    <!-- <script type="module" src="./src/particle-emitter.js"></script> -->
+    <!-- <script type="module" src="./src/pixi.js"></script> -->
 </head>
 <body>
-<div id="app"></div>
-    <div id="framerate"></div>
-    <div id="instructions">Click Anywhere</div>
-    <canvas id="stage" width="400" height="400"></canvas>
-
+    <script type="module" src="./src/index.js">
+        
+    </script>
 </body>
 </html>

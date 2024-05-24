@@ -1,4 +1,5 @@
 {
+  "module": "commonjs",
   "type": "module",
   "name": "pixi-test",
   "version": "1.0.0",
@@ -14,4 +15,5 @@
     "@pixi/particle-emitter": "^5.0.8",
     "pixi.js": "^8.1.5"
   }
+
 }
