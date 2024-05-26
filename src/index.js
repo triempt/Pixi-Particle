@@ -1,3 +1,6 @@
+// import * as PIXI from './pixi.js';
+import particleConfig from '../particles/emitter.json'  with { type: "json" };
+
 (async () => {
     // create Pixi app
     const app = new PIXI.Application();
@@ -5,8 +8,10 @@
     document.body.appendChild(app.canvas);
     let container = new PIXI.Container();
     // starting emitter
-    await PIXI.Assets.load('./images/T_Sparkle.png');
+    let texture = await PIXI.Assets.load('./images/T_Sparkle.png');
     const emitter = new PIXI.particles.Emitter(app.stage, createEmitterConfig());
+    // const emitter = new PIXI.particles.Emitter(app.stage, PIXI.particles.EmitterConfig.upgradeConfig(particleConfig, [texture]));
+    //upgradeConfig(myOldConfig, [myTexture, myOtherTexture])
     PIXI.Ticker.shared.maxFPS = 60;
     (function play() { emitter.playOnce(play); })();
 
@@ -36,5 +41,7 @@
                 { type: 'textureSingle', config: { texture: PIXI.Texture.from('./images/T_Sparkle.png') } }, // Texture
             ],
         };
+
     }
+
 })();
