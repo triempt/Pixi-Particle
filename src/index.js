@@ -51,7 +51,7 @@
 
 
     //Load bundle files and the additional example spritesheet
-    await fx.loadBundleFiles(rfxBundleSettings, rfxSpritesheet, null, additionalAssets).then(function (data) {
+    await fx.loadBundleFiles(rfxBundleSettings, rfxSpritesheet, null, null).then(function (data) {
 
         // var logo = PIXI.Sprite.from('./images/Bubbles99.png');
         // logo.anchor.set(0.5);
