@@ -1,47 +1,64 @@
-// import * as PIXI from './pixi.js';
-import particleConfig from '../particles/emitter.json'  with { type: "json" };
 
-(async () => {
-    // create Pixi app
-    const app = new PIXI.Application();
-    await app.init({ backgroundColor: 0x000000, width: 1024, height: 768 });
-    document.body.appendChild(app.canvas);
-    let container = new PIXI.Container();
-    // starting emitter
-    let texture = await PIXI.Assets.load('./images/T_Sparkle.png');
-    const emitter = new PIXI.particles.Emitter(app.stage, createEmitterConfig());
-    // const emitter = new PIXI.particles.Emitter(app.stage, PIXI.particles.EmitterConfig.upgradeConfig(particleConfig, [texture]));
-    //upgradeConfig(myOldConfig, [myTexture, myOtherTexture])
-    PIXI.Ticker.shared.maxFPS = 60;
-    (function play() { emitter.playOnce(play); })();
+const fx = new revolt.FX();
+const app = new PIXI.Application();
 
-    // emmiter configuration
-    function createEmitterConfig() {
-        const pos = { x: 487, y: 479 };
-        const colour = '0x0F22D4';
-        const duration = 5; //seconds
+var width = 1200;
+var height = 640;
 
-        return {
-            // Particle properties
-            lifetime: { min: 0.5, max: 1.5 }, // Lifetime range
-            frequency: 0.001, // Emission frequency
-            maxParticles: 200, // Maximum particles
-            emitterLifetime: duration, // Emitter lifetime
-            addAtBack: false, // Add particles at back
-            autoUpdate: true, // Auto-update
-            emit: false, // Start emitting
-            pos, // Position
-            behaviors: [
-                // Particle behaviors
-                { type: 'alpha', config: { alpha: { list: [{ value: 1, time: 0 }, { value: 0.5, time: 0.8 }, { value: 0.1, time: 1 }] } } }, // Alpha
-                { type: 'scale', config: { scale: { list: [{ value: 0.1, time: 0 }, { value: 1, time: 1 }] } } }, // Scale
-                { type: 'color', config: { color: { list: [{ value: '#ffffff', time: 0.3 }, { value: colour, time: 1 }] } } }, // Color
-                { type: 'moveSpeed', config: { speed: { list: [{ value: 20, time: 0 }, { value: 300, time: 1 }], isStepped: false }, minMult: 0.2 } }, // Movement speed
-                { type: 'rotationStatic', config: { min: -110, max: -70 } }, // Rotation
-                { type: 'textureSingle', config: { texture: PIXI.Texture.from('./images/T_Sparkle.png') } }, // Texture
-            ],
-        };
+await app.init({ backgroundColor: '#000000', width, height });
+document.getElementById('canvas').appendChild(app.canvas);
+//Load the assets using PIXI Assets loader
+// PIXI.Assets.add({ alias: 'fx_settings', src: './assets/circle/CircleFX.json' });
+// PIXI.Assets.add({ alias: 'fx_spritesheet', src: './assets/circle/textpacker.json' });
+// PIXI.Assets.add({ alias: 'example_spritesheet', src: './assets/circle/textpacker.png' });
 
-    }
+// PIXI.Assets.load(['fx_settings', 'fx_spritesheet']).then(function (data) {
+//     //Init the bundle
+//     fx.initBundle(data.fx_settings);
 
-})();
+//     app.ticker.add(function () {
+//         //Update the RevoltFX instance
+//         fx.update();
+//     });
+
+// });
+const rfxBundleSettings = './assets/circle/CircleFX.json';
+const rfxSpritesheet = './assets/circle/textpacker.json';
+const additionalAssets = ['assets/rfx-examples.json'];
+// let sprite = PIXI.Sprite.from('./images/Bubbles99.png');
+// const logo = await PIXI.Sprite.from('./images/Bubbles99.png');
+app.ticker = new PIXI.Ticker();
+console.log("ticker: ", app.ticker);
+//Load bundle files and the additional example spritesheet
+await fx.loadBundleFiles(rfxBundleSettings, rfxSpritesheet, null, null).then(function (data) {
+
+    var content = new PIXI.Container();
+    content.x = width * 0.5;
+    content.y = height * 0.5;
+    app.stage.addChild(content);
+
+    // var logo = sprite;
+    // logo.anchor.set(0.5);
+    // logo.alpha = 0.6;
+    // content.addChild(logo);
+
+    const emitter = fx.getParticleEmitter('circle-glow');
+    emitter.x = 100;
+    emitter.y = 100;
+    emitter.rotation = Math.PI;
+    emitter.on.started.add(emitter => { console.log("start fx: ", emitter) });
+    emitter.init(content);
+
+
+    app.ticker.add(function () {
+        //Update the RevoltFX instance
+        fx.update();
+    });
+
+}).catch(function (err) {
+    console.log('Error', err);
+});
+
+
+//Inititialize it with the target PIXI container
+

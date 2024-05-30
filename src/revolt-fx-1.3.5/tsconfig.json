@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "module": "ESNext",
+    "target": "ES6",
+    "experimentalDecorators": true,
+    "strictNullChecks": false,
+    "declaration": true,
+    "rootDir": "./src",
+    "outDir": "./lib",
+    "strict": false,
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node"
+  },
+  "compileOnSave": false,
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "*/**.d.ts"
+  ]
+}
