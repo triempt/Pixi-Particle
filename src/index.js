@@ -1,13 +1,21 @@
 (async () => {
+    const width = 1200;
+    const height = 640;
+    const floorY = 590;
+    var angle = 0;
 
     const app = new PIXI.Application();
     const fx = new revolt.FX();
-
-    var width = 1200;
-    var height = 640;
-
-    await app.init({ backgroundColor: '#aabbcc', width, height });
+    await app.init({ backgroundColor: '#aabbcc', resizeTo: window });
     document.body.appendChild(app.canvas);
+
+    const stats = new PIXI.Container();
+
+    // app.ticker.add((ticker) => {
+    //     //Update the RevoltFX instance
+    //     fx.update(ticker.deltaTime);
+    //     stats.text = 'Emitters ' + fx.emitterCount + ' / Particles ' + fx.particleCount + ' / ' + Math.round(app.ticker.FPS) + ' FPS';
+    // });
 
     console.log("app: ", app);
     console.log("ticker: ", app.ticker);
@@ -28,52 +36,46 @@
     app.stage.addChild(container);
     app.stage.addChild(debug);
 
+    PIXI.Assets.add({ alias: 'fx_settings', src: 'assets/default-bundle.json' });
+    PIXI.Assets.add({ alias: 'fx_spritesheet', src: 'assets/revoltfx-spritesheet.json' });
+    PIXI.Assets.add({ alias: 'example_spritesheet', src: 'assets/rfx-examples.json' });
 
-    //Load the assets using PIXI Assets loader
-    // PIXI.Assets.add({ alias: 'fx_settings', src: './assets/circle/CircleFX.json' });
-    // PIXI.Assets.add({ alias: 'fx_spritesheet', src: './assets/circle/textpacker.json' });
-    // PIXI.Assets.add({ alias: 'example_spritesheet', src: './assets/circle/textpacker.png' });
+    const data = PIXI.Assets.load(['fx_settings', 'fx_spritesheet', 'example_spritesheet']).then(function (data) {
+        //Init the bundle
+        fx.initBundle(data.fx_settings);
+        fx.maxParticles = 10000;
+        fx.setFloorY(floorY);
 
-    // PIXI.Assets.load(['fx_settings', 'fx_spritesheet']).then(function (data) {
-    //     //Init the bundle
-    //     fx.initBundle(data.fx_settings);
-
-    //     app.ticker.add(function () {
-    //         //Update the RevoltFX instance
-    //         fx.update();
-    //     });
-
-    // });
-    const rfxBundleSettings = './assets/circle/CircleFX.json';
-    const rfxSpritesheet = './assets/circle/textpacker.json';
-    const additionalAssets = ['./assets/circle/CircleFX_copy.json'];
-
-
-
-    //Load bundle files and the additional example spritesheet
-    await fx.loadBundleFiles(rfxBundleSettings, rfxSpritesheet, null, null).then(function (data) {
-
-        // var logo = PIXI.Sprite.from('./images/Bubbles99.png');
-        // logo.anchor.set(0.5);
-        // logo.alpha = 0.6;
-        // content.addChild(logo);
+        app.ticker.add(function () {
+            //Update the RevoltFX instance
+            fx.update();
+        });
         const buttonCircle = document.getElementById('button');
         buttonCircle.addEventListener("mouseup", (e) => {
-            const emitter = fx.getParticleEmitter('circle-glow');
+            const emitter = fx.getParticleEmitter('fire-arc');
             console.log("emitter: ", emitter); //=> data is nulls
 
             emitter.init(container);
-            emitter.x = 100;
-            emitter.y = 100;
+            emitter.x = 400;
+            emitter.y = 400;
             emitter.rotation = Math.PI;
             emitter.start();
             console.log("_particles: ", emitter._particles); //=>nulls
-            app.ticker.add(function (delta) {
-                //Update the RevoltFX instance
-                fx.update(delta);
-                console.log("update count: ", emitter._particleCount); //=>nulls
 
-            });
+
+            emitter.settings.autoRotation = false;
+            emitter.init(container);
+            angle = 0;
+            update();
+
+
+            main.app.ticker.add(update, this);
+            // app.ticker.add(function (delta) {
+            //     //Update the RevoltFX instance
+            //     fx.update(delta);
+            //     console.log("update count: ", emitter._particleCount); //=>nulls
+
+            // });
 
             emitter.on.started.add(emitter => {
                 console.log('emitter-one-start', emitter.particles);
@@ -83,7 +85,7 @@
 
             //Register for a particle spawned signal (event)
             emitter.on.particleSpawned.add(particle => {
-                console.log('particle: ', particle);
+                //console.log('particle: ', particle);
 
                 drawDot(particle.x, particle.y, 20, 0x00ff00);
 
@@ -101,14 +103,78 @@
             emitter.on.completed.addOnce(function (emitter) {
                 console.log('Done');
             });
+            function update() {
+                angle += 0.004;
+                emitter.x = main.width * 0.5 + Math.cos(angle) * 300;
+                emitter.y = main.height * 0.5 + Math.sin(angle * 2) * 200;
+                emitter.rotation = Math.sin(angle) * 20;
+            }
+        
 
         });
 
-
-
-    }).catch(function (err) {
-        console.log('Error', err);
     });
+
+
+    //Load bundle files and the additional example spritesheet
+    // await fx.loadBundleFiles(rfxBundleSettings, rfxSpritesheet, null, null).then(function (data) {
+
+    //     // var logo = PIXI.Sprite.from('./images/Bubbles99.png');
+    //     // logo.anchor.set(0.5);
+    //     // logo.alpha = 0.6;
+    //     // content.addChild(logo);
+    //     const buttonCircle = document.getElementById('button');
+    //     buttonCircle.addEventListener("mouseup", (e) => {
+    //         const emitter = fx.getParticleEmitter('circle-glow');
+    //         console.log("emitter: ", emitter); //=> data is nulls
+
+    //         emitter.init(container);
+    //         emitter.x = 100;
+    //         emitter.y = 100;
+    //         emitter.rotation = Math.PI;
+    //         emitter.start();
+    //         console.log("_particles: ", emitter._particles); //=>nulls
+    //         app.ticker.add(function (delta) {
+    //             //Update the RevoltFX instance
+    //             fx.update(delta);
+    //             console.log("update count: ", emitter._particleCount); //=>nulls
+
+    //         });
+
+    //         emitter.on.started.add(emitter => {
+    //             console.log('emitter-one-start', emitter.particles);
+    //         });
+
+
+
+    //         //Register for a particle spawned signal (event)
+    //         emitter.on.particleSpawned.add(particle => {
+    //             console.log('particle: ', particle);
+
+    //             drawDot(particle.x, particle.y, 20, 0x00ff00);
+
+    //             //Register for an update signal for that particle
+    //             particle.on.updated.add(function (particle) {
+    //                 drawDot(particle.x, particle.y, 5, 0x00ff00);
+    //             });
+
+    //             //Register for a died signal for that particle
+    //             particle.on.died.add(function (particle) {
+    //                 drawDot(particle.x, particle.y, 15, 0xff0000);
+    //             });
+    //         });
+
+    //         emitter.on.completed.addOnce(function (emitter) {
+    //             console.log('Done');
+    //         });
+
+    //     });
+
+
+
+    // }).catch(function (err) {
+    //     console.log('Error', err);
+    // });
 
 
 
