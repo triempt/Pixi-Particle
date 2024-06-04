@@ -6,7 +6,7 @@
 
     const app = new PIXI.Application();
     const fx = new revolt.FX();
-    await app.init({ backgroundColor: '#aabbcc', resizeTo: window });
+    await app.init({ backgroundColor: '#000000', resizeTo: window });
     document.body.appendChild(app.canvas);
 
 
@@ -35,11 +35,13 @@
         statsInfo.textContent = 'Emitters ' + fx.emitterCount + ' / Particles ' + fx.particleCount + ' / ' + Math.round(app.ticker.FPS) + ' FPS';
     });
 
-    PIXI.Assets.add({ alias: 'fx_settings', src: 'assets/default-bundle.json' });
-    PIXI.Assets.add({ alias: 'fx_spritesheet', src: 'assets/revoltfx-spritesheet.json' });
-    PIXI.Assets.add({ alias: 'example_spritesheet', src: 'assets/rfx-examples.json' });
+    // PIXI.Assets.add({ alias: 'fx_settings', src: 'assets/default-bundle.json' });
+    // PIXI.Assets.add({ alias: 'fx_spritesheet', src: 'assets/revoltfx-spritesheet.json' });
+    // PIXI.Assets.add({ alias: 'example_spritesheet', src: 'assets/rfx-examples.json' });
+    PIXI.Assets.add({ alias: 'fx_settings', src: 'assets/circle/CircleFX.json' });
+    PIXI.Assets.add({ alias: 'fx_spritesheet', src: 'assets/circle/textpacker.json' });
 
-    PIXI.Assets.load(['fx_settings', 'fx_spritesheet', 'example_spritesheet']).then(function (data) {
+    PIXI.Assets.load(['fx_settings', 'fx_spritesheet']).then(function (data) {
         //Init the bundle
         fx.initBundle(data.fx_settings);
         fx.maxParticles = 10000;
@@ -51,7 +53,7 @@
         });
         const buttonCircle = document.getElementById('button');
         buttonCircle.addEventListener("mouseup", (e) => {
-            const emitter = fx.getParticleEmitter('fire-arc');
+            const emitter = fx.getParticleEmitter('circle-glow');
             console.log("emitter: ", emitter); //=> data is nulls
 
             emitter.init(container);
@@ -97,10 +99,10 @@
                 console.log('Done');
             });
             function update() {
-                angle += 0.004;
-                emitter.x = width * 0.5 + Math.cos(angle) * 300;
-                emitter.y = height * 0.5 + Math.sin(angle * 2) * 200;
-                emitter.rotation = Math.sin(angle) * 20;
+                // angle += 0.004;
+                // emitter.x = width * 0.5 + Math.cos(angle) * 300;
+                // emitter.y = height * 0.5 + Math.sin(angle * 2) * 200;
+                // emitter.rotation = Math.sin(angle) * 20;
             }
         });
 
